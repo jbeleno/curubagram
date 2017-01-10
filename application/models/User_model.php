@@ -194,7 +194,7 @@ class User_model extends CI_Model {
 	 */
     public function logout()
     {
-    	$session_data = array('id_user', 'username', 'logged_in');
+    	$session_data = array('id_user', 'id_text', 'username', 'logged_in');
 		$this->session->unset_userdata($session_data);
    	
     	return array('status' => 'OK');

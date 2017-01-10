@@ -37,75 +37,52 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * CurubaGram Text Model
+ * CurubaGram User Controller
  *
- * @category	Models
+ * @category	Controllers
  * @author		Juan Sebastián Beleño Díaz
  * @link		xxx
  */
+class User extends CI_Controller {
 
-class Text_model extends CI_Model {
-
-	/**
-	 * Constructor
-	 *
-	 * @return	void
-	 */
 	public function __construct()
     {
         // Call the CI_Model constructor
         parent::__construct();
+
+        // Load user model
+        $this->load->model('user_model');
     }
 
-    // --------------------------------------------------------------------
-    
-    /**
-	 * Register a new text with orthographic errors
-	 *
-	 * @param	string	$id_user	username that will identify the user
-	 * @param	string	$text		text with orthographic errors
-	 * @param 	string 	$source 	source of the text
-	 * @return	array
-	 */
-    public function add($id_user, $text, $source)
-    {
-    	$data = array(
-    		'text' => $text,
-    		'source' => $source,
-    		'date' => date("Y-m-d H:i:s")
-    	);
+	public function add()
+	{
+		$username = $this->input->post('username');
+		$password = $this->input->post('password');
+		$email = $this->input->post('email');
 
-    	// Handling the UUID as identifier
-        $this->db->set('id', "UNHEX(REPLACE(UUID(),'-',''))", FALSE);
-        $this->db->set('id_user', "UNHEX('".$id_user."')", FALSE);
+		$this->output
+	         ->set_content_type('application/json')
+	         ->set_output(json_encode($this->user_model->add($username, $email, $password)));
+	}
 
-        $this->db->insert('text', $data);
+	public function login()
+	{
+		$username = $this->input->post('username');
+		$password = $this->input->post('password');
 
-        return array('status' => 'OK');
-    }
+		$this->output
+	         ->set_content_type('application/json')
+	         ->set_output(json_encode($this->user_model->login($username, $password)));
+	}
 
-    // --------------------------------------------------------------------
-    
-    /**
-	 * Get a random text with orthographic errors
-	 *
-	 * @return	array
-	 */
-    public function get_random_text()
-    {
-    	$query_text = 'SELECT id, content, source FROM text ORDER BY RAND() LIMIT 1';
-    	$query = $this->db->query($query_text);
+	public function logout()
+	{
+		$this->output
+	         ->set_content_type('application/json')
+	         ->set_output(json_encode($this->user_model->logout()));
+	}
 
-    	$text = $query->row();
-
-    	$this->session->set_userdata('id_text', $text->id);
-
-        return array(
-        	'status' => 'OK',
-        	'text' => $text
-        );
-    }
 }
 
-/* End of file Text_model.php */
-/* Location: ./application/Text_model.php */
+/* End of file User.php */
+/* Location: ./application/controllers/User.php */
