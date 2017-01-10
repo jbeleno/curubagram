@@ -46,8 +46,63 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Text_model extends CI_Model {
 
-	
+	/**
+	 * Constructor
+	 *
+	 * @return	void
+	 */
+	public function __construct()
+    {
+        // Call the CI_Model constructor
+        parent::__construct();
+    }
 
+    // --------------------------------------------------------------------
+    
+    /**
+	 * Register a new text with orthographic errors
+	 *
+	 * @param	string	$id_user	username that will identify the user
+	 * @param	string	$text		text with orthographic errors
+	 * @param 	string 	$source 	source of the text
+	 * @return	array
+	 */
+    public function add($id_user, $text, $source)
+    {
+    	$data = array(
+    		'text' => $text,
+    		'source' => $source,
+    		'date' => date("Y-m-d H:i:s")
+    	);
+
+    	// Handling the UUID as identifier
+        $this->db->set('id', "UNHEX(REPLACE(UUID(),'-',''))", FALSE);
+        $this->db->set('id_user', "UNHEX('".$id_user."')", FALSE);
+
+        $this->db->insert('text', $data);
+
+        return array('status' => 'OK');
+    }
+
+    // --------------------------------------------------------------------
+    
+    /**
+	 * Get a random text with orthographic errors
+	 *
+	 * @return	array
+	 */
+    public function get_random_text()
+    {
+    	$query_text = 'SELECT id, content, source FROM text ORDER BY RAND() LIMIT 1';
+    	$query = $this->db->query($query_text);
+
+    	$text = $query->row();
+
+        return array(
+        	'status' => 'OK',
+        	'text' => $text
+        );
+    }
 }
 
 /* End of file Text_model.php */

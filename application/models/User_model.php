@@ -107,8 +107,12 @@ class User_model extends CI_Model {
 
         $this->db->insert('user', $data);
 
+        // Get id
+        $user_id = $this->db->insert_id();
+
         // Start session and store the username for future uses
     	$session_data = array(
+            'id_user' => $user_id,
 	        'username'  => $username,
 	        'logged_in' => TRUE
 		);
@@ -129,7 +133,7 @@ class User_model extends CI_Model {
 	 */
     public function login($username, $password)
     {
-    	$this->db->select('password');
+    	$this->db->select('HEX(id) as id, password');
     	$this->db->where('username', $username);
     	$query = $this->db->get('user', 1, 0);
 
@@ -137,6 +141,7 @@ class User_model extends CI_Model {
     	if($query->num_rows() > 0)
     	{
     		$hash_password = $query->row()->password;
+            $id_user =  $query->row()->id;
 
     		// Verify the password
     		if(verify_encryption($password, $hash_password))
@@ -154,6 +159,7 @@ class User_model extends CI_Model {
 
 		    	// Start session and store the username for future uses
 		    	$session_data = array(
+                    'id_user' => $id_user,
 			        'username'  => $username,
 			        'logged_in' => TRUE
 				);
@@ -188,7 +194,7 @@ class User_model extends CI_Model {
 	 */
     public function logout()
     {
-    	$session_data = array('username', 'logged_in');
+    	$session_data = array('id_user', 'username', 'logged_in');
 		$this->session->unset_userdata($session_data);
    	
     	return array('status' => 'OK');
