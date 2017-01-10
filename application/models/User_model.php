@@ -66,11 +66,31 @@ class User_model extends CI_Model {
 	 *
 	 * @param	string	$username	username that will identify the user
 	 * @param	string	$email		email that belongs to the user
-	 * @param	string	$password	a binary(16) hash of the user's password
+	 * @param	string	$password	password of the user
 	 * @return	array
 	 */
-    public function new_user($username, $email, $password)
+    public function add($username, $email, $password)
     {
+    	// Verify the username
+    	$this->db->where('username', $username);
+    	if($this->db->count_all_results('user'))
+    	{
+    		return array(
+    			'status' => 'BAD',
+    			'msg' => '¡Lo sentimos!, ya existe un alguien registrado con ese nombre de usuario.'
+    		);
+    	}
+
+    	// Verify the email
+    	$this->db->where('email', $email);
+    	if($this->db->count_all_results('user'))
+    	{
+    		return array(
+    			'status' => 'BAD',
+    			'msg' => '¡Lo sentimos!, ya existe un alguien registrado con ese correo electrónico.'
+    		);
+    	}
+
     	$date = date("Y-m-d H:i:s");
 
     	$data = array(
@@ -87,7 +107,91 @@ class User_model extends CI_Model {
 
         $this->db->insert('user', $data);
 
+        // Start session and store the username for future uses
+    	$session_data = array(
+	        'username'  => $username,
+	        'logged_in' => TRUE
+		);
+
+		$this->session->set_userdata($session_data);
+
         return array('status' => 'OK');
+    }
+
+    // --------------------------------------------------------------------
+    
+    /**
+	 * Attemp of login of a user
+	 *
+	 * @param	string	$username	username that identify the user
+	 * @param	string	$password	password of the user
+	 * @return	array
+	 */
+    public function login($username, $password)
+    {
+    	$this->db->select('password');
+    	$this->db->where('username', $username);
+    	$query = $this->db->get('user', 1, 0);
+
+    	// Verify the username
+    	if($query->num_rows() > 0)
+    	{
+    		$hash_password = $query->row()->password;
+
+    		// Verify the password
+    		if(verify_encryption($password, $hash_password))
+    		{
+    			// Update IP and date_login
+    			$date = date("Y-m-d H:i:s");
+
+		    	$data = array(
+		    		'ip' => $this->input->ip_address(),
+		    		'date_login' => $date
+		    	);
+
+		    	$this->db->where('username', $username);
+		    	$this->db->update('user', $data);
+
+		    	// Start session and store the username for future uses
+		    	$session_data = array(
+			        'username'  => $username,
+			        'logged_in' => TRUE
+				);
+
+				$this->session->set_userdata($session_data);
+
+				return array('status' => 'OK');
+    		}
+    		else
+    		{
+    			return array(
+	    			'status' => 'BAD',
+	    			'msg' => 'No existen usuarios registrados con ese nombre de usuario y contraseña'
+	    		);
+    		}
+    	}
+    	else
+    	{
+    		return array(
+    			'status' => 'BAD',
+    			'msg' => 'No existen usuarios registrados con ese nombre de usuario y contraseña'
+    		);
+    	}
+    }
+
+    // --------------------------------------------------------------------
+    
+    /**
+	 * Logout of a user
+	 *
+	 * @return	array
+	 */
+    public function logout()
+    {
+    	$session_data = array('username', 'logged_in');
+		$this->session->unset_userdata($session_data);
+   	
+    	return array('status' => 'OK');
     }
 }
 
