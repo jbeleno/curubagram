@@ -77,7 +77,7 @@ class User_model extends CI_Model {
     	{
     		return array(
     			'status' => 'BAD',
-    			'msg' => '¡Lo sentimos!, ya existe un alguien registrado con ese nombre de usuario.'
+    			'msg' => '¡Lo sentimos!, ya existe alguien registrado con ese nombre de usuario.'
     		);
     	}
 
@@ -87,7 +87,7 @@ class User_model extends CI_Model {
     	{
     		return array(
     			'status' => 'BAD',
-    			'msg' => '¡Lo sentimos!, ya existe un alguien registrado con ese correo electrónico.'
+    			'msg' => '¡Lo sentimos!, ya existe alguien registrado con ese correo electrónico.'
     		);
     	}
 
@@ -172,7 +172,7 @@ class User_model extends CI_Model {
     		{
     			return array(
 	    			'status' => 'BAD',
-	    			'msg' => 'No existen usuarios registrados con ese nombre de usuario y contraseña'
+	    			'msg' => 'Usuario o contraseña incorrecta. Inténtalo de nuevo.'
 	    		);
     		}
     	}
@@ -180,7 +180,7 @@ class User_model extends CI_Model {
     	{
     		return array(
     			'status' => 'BAD',
-    			'msg' => 'No existen usuarios registrados con ese nombre de usuario y contraseña'
+    			'msg' => 'Usuario o contraseña incorrecta. Inténtalo de nuevo.'
     		);
     	}
     }

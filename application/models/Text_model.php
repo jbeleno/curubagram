@@ -70,7 +70,7 @@ class Text_model extends CI_Model {
     public function add($id_user, $text, $source)
     {
     	$data = array(
-    		'text' => $text,
+    		'content' => $text,
     		'source' => $source,
     		'date' => date("Y-m-d H:i:s")
     	);
@@ -93,11 +93,11 @@ class Text_model extends CI_Model {
 	 */
     public function get_random_text()
     {
-    	$query_text = 'SELECT id, content, source FROM text ORDER BY RAND() LIMIT 1';
+    	$query_text = 'SELECT HEX(id) as id, content, source FROM text ORDER BY RAND() LIMIT 1';
     	$query = $this->db->query($query_text);
 
     	$text = $query->row();
-
+        
     	$this->session->set_userdata('id_text', $text->id);
 
         return array(
