@@ -91,6 +91,30 @@ class User_model extends CI_Model {
     		);
     	}
 
+        // Verify username length
+        if(strlen($username) < 3){
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos!, el nombre de usuario es muy corto.'
+            );
+        }
+
+        // Verify password length
+        if(strlen($password) < 6){
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos!, la contraseña debe tener al menos 6 carácteres.'
+            );
+        }
+
+        // Verify email format
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos!, el correo electrónico no tiene el formato adecuado.'
+            );
+        }
+
     	$date = date("Y-m-d H:i:s");
 
     	$data = array(
