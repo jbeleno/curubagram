@@ -75,6 +75,33 @@ class Text_model extends CI_Model {
     		'date' => date("Y-m-d H:i:s")
     	);
 
+        // Verify if the text is empty or short
+        if(strlen($text) < 3)
+        {
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos! El texto es demasiado corto'
+            );
+        }
+
+        // Verify if the text is too long
+        if(strlen($text) > 512)
+        {
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos! El texto es demasiado largo. Intenta dividir el texto en varias partes y enviarlas por separado.'
+            );
+        }
+
+        // Verify if the source is empty
+        if(strlen($source) == 0)
+        {
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos! Debes escribir la fuente de origen del texto.'
+            );
+        }
+
     	// Handling the UUID as identifier
         $this->db->set('id', "UNHEX(REPLACE(UUID(),'-',''))", FALSE);
         $this->db->set('id_user', "UNHEX('".$id_user."')", FALSE);

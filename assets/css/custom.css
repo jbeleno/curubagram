@@ -193,3 +193,10 @@ a{
 	background: #00796B;
 	color: #ffffff;
 }
+
+/***************************** Proposal Page *******************************/
+
+.box-text-counter{
+	text-align: right;
+	font-size: 14px;
+}
