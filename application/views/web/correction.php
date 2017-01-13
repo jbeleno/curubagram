@@ -69,17 +69,30 @@
 				correction: texto
 			},
 			success: function(result){
-				var response = '<div class="alert alert-success alert-dismissible" role="alert">' + 
-								'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-  								'<strong>¡Texto corregido!</strong> ' +
-  								'Muchas Gracias.' + 
-  								'</div>';
+				var response = '';
 
-        		$("#result-msg").html(response);
-        		$("#txt-content").val('');
-        		$("#btn-send").removeClass('disabled');
+				if(result.status == 'OK')
+				{
+					var response = 	'<div class="alert alert-success alert-dismissible" role="alert">' + 
+									'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+	  								'<strong>¡Texto corregido!</strong> ' +
+	  								'Muchas Gracias.' + 
+	  								'</div>';
 
-        		setTimeout(function(){ location.reload(); }, 1000);
+	        		
+	        		$("#txt-content").val('');
+	        		setTimeout(function(){ location.reload(); }, 1000);
+				}
+				else
+				{
+					var response = 	'<div class="alert alert-danger alert-dismissible" role="alert">' + 
+									'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+	  								result.msg +
+	  								'</div>';
+				}
+				
+				$("#result-msg").html(response);
+				$("#btn-send").removeClass('disabled');
     		}
     	});
 	}

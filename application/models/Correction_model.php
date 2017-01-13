@@ -68,6 +68,14 @@ class Correction_model extends CI_Model {
 	 */
     public function add($id_user, $id_text, $correction)
     {
+        if(strlen($correction) == 0)
+        {
+            return array(
+                'status' => 'BAD',
+                'msg' => '¡Lo sentimos! no podemos aceptar una corrección vacía.'
+            );
+        }
+
     	$data = array(
     		'correction' => $correction,
     		'date' => date("Y-m-d H:i:s")
